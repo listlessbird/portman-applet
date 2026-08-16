@@ -1,0 +1,11 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    ".agents/**",
+    "dist/**",
+    "files/**",
+    "node_modules/**",
+    "reference/**",
+    "tools/oxlint/anti-slop/**"
+  ]
+}

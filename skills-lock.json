@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "adopt-better-result": {
+      "source": "dmmulroy/better-result",
+      "sourceType": "github",
+      "skillPath": "skills/adopt-better-result/SKILL.md",
+      "computedHash": "42e83fd4ddf2f289bbffb01d45a7a14dd596b1d40e285823b34a41987fca8772"
+    },
+    "install-anti-slop": {
+      "source": "dmmulroy/anti-slop",
+      "sourceType": "github",
+      "skillPath": "skills/install-anti-slop/SKILL.md",
+      "computedHash": "8c03582ef9b14d0034d6a21da154449f7b9e6618900fb19886008982b3453f90"
+    }
+  }
+}

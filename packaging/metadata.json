@@ -1,0 +1,8 @@
+{
+  "uuid": "portman@listlessbird",
+  "name": "Portman",
+  "description": "Find and safely stop processes listening on local ports.",
+  "icon": "network-server-symbolic",
+  "version": "0.1.0",
+  "max-instances": "-1"
+}

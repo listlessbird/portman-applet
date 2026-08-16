@@ -1,0 +1,31 @@
+{
+  "name": "portman-applet",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A Cinnamon port manager applet",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm typecheck && vite build",
+    "dev": "vite build --watch",
+    "dev:install": "pnpm typecheck && vite build --mode dev-install",
+    "install:local": "pnpm typecheck && vite build --mode local-install",
+    "test": "node --experimental-strip-types --test src/ports/parsing.test.ts src/ports/process-control.test.ts src/ui/error-messages.test.ts",
+    "typecheck": "tsgo --noEmit",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "lint": "oxlint .",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck"
+  },
+  "dependencies": {
+    "better-result": "^3.0.1"
+  },
+  "devDependencies": {
+    "@oxlint/plugins": "1.78.0",
+    "@types/node": "^26.2.0",
+    "@typescript/native-preview": "7.0.0-dev.20260707.2",
+    "oxfmt": "0.63.0",
+    "oxlint": "1.78.0",
+    "vite": "8.2.1"
+  },
+  "packageManager": "pnpm@10.33.2"
+}
