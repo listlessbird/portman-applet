@@ -3,6 +3,10 @@
 Portman finds listening local ports and lets you safely stop their owning
 processes from a Cinnamon panel applet.
 
+## Preview
+
+![Portman panel applet](assets/portman-panel.png)
+
 ## Build
 
 Install dependencies and produce the Cinnamon package:
