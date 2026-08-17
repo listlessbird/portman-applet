@@ -1,4 +1,9 @@
 declare namespace CinnamonSt {
+  interface RelayoutActor {
+    get_children(): readonly RelayoutActor[];
+    queue_relayout(): void;
+  }
+
   interface EntryOptions {
     hint_text?: string;
     style_class?: string;
@@ -27,6 +32,7 @@ declare namespace CinnamonApplet {
 
   class AppletPopupMenu {
     constructor(launcher: TextIconApplet, orientation: string);
+    readonly actor: CinnamonSt.RelayoutActor;
     addMenuItem(
       item:
         | CinnamonPopup.PopupBaseMenuItem
@@ -68,6 +74,7 @@ declare namespace CinnamonPopup {
   }
 
   class PopupMenuSection {
+    readonly actor: CinnamonSt.RelayoutActor;
     addMenuItem(item: PopupMenuItem | PopupSubMenuMenuItem | PopupSeparatorMenuItem): void;
     removeAll(): void;
   }

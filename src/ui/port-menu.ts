@@ -91,6 +91,7 @@ export class PortMenuView {
     this.portSection.addMenuItem(
       new PopupMenu.PopupMenuItem(`Unable to inspect ports: ${message}`, { reactive: false }),
     );
+    this.queueRelayout();
   }
 
   private render(): void {
@@ -103,6 +104,7 @@ export class PortMenuView {
       const emptyMessage =
         this.ports.length === 0 ? "No listening TCP ports" : "No ports match this search";
       this.portSection.addMenuItem(new PopupMenu.PopupMenuItem(emptyMessage, { reactive: false }));
+      this.queueRelayout();
       return;
     }
 
@@ -114,6 +116,18 @@ export class PortMenuView {
     );
 
     for (const port of visiblePorts) this.addPortMenuItem(port);
+    this.queueRelayout();
+  }
+
+  /**
+   * Port data arrives asynchronously while the popup can already be open.
+   * Cinnamon 6.6 does not requeue this allocation from setColumnWidths(), so
+   * explicitly invalidate both levels after replacing section children.
+   */
+  private queueRelayout(): void {
+    for (const child of this.portSection.actor.get_children()) child.queue_relayout();
+    this.portSection.actor.queue_relayout();
+    this.menu.actor.queue_relayout();
   }
 
   private addPortMenuItem(port: OpenPort): void {
@@ -131,6 +145,8 @@ export class PortMenuView {
         .join(" · ");
       portItem.menu.addMenuItem(new PopupMenu.PopupMenuItem(detail, { reactive: false }));
     }
+
+    this.portSection.addMenuItem(portItem);
 
     if (primary === undefined) {
       portItem.menu.addMenuItem(
