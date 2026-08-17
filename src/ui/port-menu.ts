@@ -22,6 +22,9 @@ export class PortMenuView {
   private ports: readonly OpenPort[] = [];
   private includeSystemPorts = false;
   private filter = "";
+  private scanError: string | undefined;
+  private openSubmenuCount = 0;
+  private renderPending = false;
 
   constructor(
     launcher: CinnamonApplet.TextIconApplet,
@@ -41,7 +44,7 @@ export class PortMenuView {
     searchItem.addActor(this.searchEntry);
     this.searchEntry.clutter_text.connect("text-changed", () => {
       this.filter = this.searchEntry.clutter_text.get_text().trim().toLowerCase();
-      this.render();
+      this.requestRender();
     });
 
     this.portSection = new PopupMenu.PopupMenuSection();
@@ -82,20 +85,43 @@ export class PortMenuView {
 
   setPorts(ports: readonly OpenPort[]): void {
     this.ports = ports;
-    this.render();
+    this.scanError = undefined;
+    this.requestRender();
   }
 
   showError(message: string): void {
     this.ports = [];
-    this.portSection.removeAll();
-    this.portSection.addMenuItem(
-      new PopupMenu.PopupMenuItem(`Unable to inspect ports: ${message}`, { reactive: false }),
-    );
-    this.queueRelayout();
+    this.scanError = message;
+    this.requestRender();
+  }
+
+  /**
+   * Replacing section children destroys active submenus, so wait until the
+   * user closes one before rebuilding the port list.
+   */
+  private requestRender(): void {
+    if (this.openSubmenuCount > 0) {
+      this.renderPending = true;
+      return;
+    }
+
+    this.renderPending = false;
+    this.render();
   }
 
   private render(): void {
     this.portSection.removeAll();
+
+    if (this.scanError !== undefined) {
+      this.portSection.addMenuItem(
+        new PopupMenu.PopupMenuItem(`Unable to inspect ports: ${this.scanError}`, {
+          reactive: false,
+        }),
+      );
+      this.queueRelayout();
+      return;
+    }
+
     const visiblePorts = this.ports.filter(
       (port) => this.filter === "" || portSearchText(port).includes(this.filter),
     );
@@ -135,6 +161,10 @@ export class PortMenuView {
     const processName = primary?.name ?? "Owner unavailable";
     const suffix = port.processes.length > 1 ? ` +${port.processes.length - 1}` : "";
     const portItem = new PopupMenu.PopupSubMenuMenuItem(`${port.port} · ${processName}${suffix}`);
+    portItem.menu.connect("open-state-changed", (_menu, open) => {
+      this.openSubmenuCount += open ? 1 : -1;
+      if (this.openSubmenuCount === 0 && this.renderPending) this.requestRender();
+    });
     portItem.menu.addMenuItem(
       new PopupMenu.PopupMenuItem(`${port.host} · TCP`, { reactive: false }),
     );

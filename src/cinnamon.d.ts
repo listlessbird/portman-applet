@@ -33,6 +33,10 @@ declare namespace CinnamonApplet {
   class AppletPopupMenu {
     constructor(launcher: TextIconApplet, orientation: string);
     readonly actor: CinnamonSt.RelayoutActor;
+    connect(
+      signal: "open-state-changed",
+      callback: (menu: AppletPopupMenu, open: boolean) => void,
+    ): number;
     addMenuItem(
       item:
         | CinnamonPopup.PopupBaseMenuItem
@@ -75,6 +79,11 @@ declare namespace CinnamonPopup {
 
   class PopupMenuSection {
     readonly actor: CinnamonSt.RelayoutActor;
+    readonly isOpen: boolean;
+    connect(
+      signal: "open-state-changed",
+      callback: (menu: PopupMenuSection, open: boolean) => void,
+    ): number;
     addMenuItem(item: PopupMenuItem | PopupSubMenuMenuItem | PopupSeparatorMenuItem): void;
     removeAll(): void;
   }
